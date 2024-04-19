@@ -1,0 +1,77 @@
+data:
+    dataset: "MNIST"
+    category: "lmdb"
+    image_size: 28
+    num_channels: 1
+    random_flip: True
+    centered: True
+    uniform_dequantization: False
+    datapath: ../new_diffusion_distillation/data/mnist_origin_debug/uniform/lmdb
+    dir_type: folder
+    num_sample: -1 
+    epsilon: 0.0
+    shape: [1, 17, 28, 28]
+    dims: [1, 0, 2, 3]
+    num_steps: 512
+    t_dim: 17
+    t_idx: [0, 4, 8, 12, 16]
+    time_step: uniform
+
+model:
+    logsnr_min: -20.
+    logsnr_max: 20.
+    num_scales: 1000
+    dropout: 0.2
+    name: 'ddpmm'
+    num_classes: 0
+    ema_rate: 0.9999
+    normalization: 'GroupNorm'
+    nonlinearity: 'swish'
+    nf: 64
+    temb_dim: 256
+    ch_mult: [1, 1]  # (1, 2, 2, 2)
+    num_res_blocks: 3
+    attn_resolutions: [4, 8]  # (16,)
+    num_attn_heads: 1
+    resamp_with_conv: False
+    conditional: True
+    resblock_type: 'biggan'
+    init_scale: 0.
+    logsnr_type: inv_cos
+    fourier_feature: False
+    mean_type: x
+    time_conv: True
+    with_nin: False
+    num_modes: 2
+    pred_eps: False
+    num_t: 4
+    num_pad: 0
+    loss_weight: snr
+
+training:
+    start_iter: 0
+    n_iters: 2001
+    batchsize: 32
+    loss: vgg
+    lpips: False
+    # init_ckpt: 'exp/mnist-tddpmm-t4-quad-256-vgg-nocal/ckpts/solver-model_final.pt' 
+
+eval:
+    save_step: 1000
+    test_fid: True
+
+optim:
+    optimizer: 'Adam'
+    lr: 0.001  # 2e-4
+    beta1: 0.9
+    beta2: 0.999
+    eps: 0.0000001  # 1e-8
+    milestone: [1_000, 2_000, 3_000]
+    warmup: 100
+    grad_clip: 0.0
+
+log:
+    logname: mnist-tddpmm-t4-quad-256-vgg-nocal
+    entity: hzzheng
+    project: DiffusionModel-mnist-NewExp
+    group: TDPPMm-t4-quad-snr-256-vgg-nocal

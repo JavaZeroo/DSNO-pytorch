@@ -37,10 +37,9 @@ def main(args):
     ckpt_dir = os.path.join('exp', config.log.logname, 'ckpts')
     outdir = os.path.join('exp', config.log.logname, 'images')
     os.makedirs(outdir, exist_ok=True)
-    ref_path = 'https://nvlabs-fi-cdn.nvidia.com/edm/fid-refs/cifar10-32x32.npz'
+    # ref_path = 'https://nvlabs-fi-cdn.nvidia.com/edm/fid-refs/cifar10-32x32.npz'
 
-    args.start = 1
-    args.end = 0
+
     for i in range(args.start, args.end + args.step, args.step):
         ckpt_path = args.ckpt if args.ckpt else os.path.join(ckpt_dir, f'solver-model_{i}.pt')
         ckpt = torch.load(ckpt_path, map_location=device)
@@ -56,12 +55,12 @@ if __name__ == '__main__':
     parser.add_argument('--config', type=str, default='configs/cifar/tddpmm_t4-quad-snr-256-vgg-radam.yaml', help='configuration file')
     parser.add_argument('--ckpt', type=str, default=None, help='Checkpoint to initialize the model')
     parser.add_argument('--batchsize', type=int, help='batchsize', default=100)
-    parser.add_argument('--num_imgs', type=int, default=50000)
+    parser.add_argument('--num_imgs', type=int, default=1)
     parser.add_argument('--log', action='store_true', help='turn on the wandb')
     parser.add_argument('--seed', type=int, default=321)
     parser.add_argument('--start', type=int, default=1)
     parser.add_argument('--end', type=int, default=0)
-    parser.add_argument('--step', type=float, default=1/512)
-
+    parser.add_argument('--step', type=int, default=512)
+    
     args = parser.parse_args()
     main(args)

@@ -4,7 +4,8 @@ import lmdb
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-
+import io
+from tqdm import tqdm
 
 def split_list(arr, num_parts=4):
     data_dict = {}
@@ -27,6 +28,71 @@ Args:
     - num_data: number of data to load
 '''
 
+class MNISTData(Dataset):
+    def __init__(self, path, data_shape, dims, t_idx=None, num_data=None):
+        super().__init__()
+        env = lmdb.open(path, max_readers=32, 
+                        readonly=True, readahead=False, 
+                        lock=False, meminit=False)
+
+        self.t_idx = t_idx
+        self.dims = dims
+        if num_data:
+            self.length = num_data
+        else:
+            with env.begin(write=False) as txn:
+                self.length = int(str(txn.get('length'.encode()), 'utf-8'))
+        # print(self.length)
+        env.close()
+        self.shape = data_shape
+        if t_idx:
+            self.use_idx = True
+        else:
+            self.use_idx = False
+        self.path = path
+        self.data = []
+        with lmdb.open(self.path, max_readers=32, readonly=True, readahead=False, lock=False, meminit=False) as env:
+            with env.begin(write=False) as txn:
+                for i in tqdm(range(self.length)):
+                    key = f'{i}'.encode()
+                    value = txn.get(key)
+                    buffer = io.BytesIO(value)
+                    val = np.load(buffer)
+                    extracted_val = self.extract(val)
+                    self.data.append(torch.from_numpy(extracted_val))
+        self.data = torch.stack(self.data)    
+                
+            
+    
+    def __len__(self):
+        return self.length
+    
+    def __getitem__(self, index):
+        # if not hasattr(self, 'txn'):
+        #     self.open_db()
+
+        # key = f'{index}'.encode()
+        # value = self.txn.get(key)
+        # buffer = io.BytesIO(value)
+        # val = np.load(buffer)
+        # # val = np.frombuffer(value, dtype=np.float32)
+        # extracted_val = self.extract(val)
+        # data = torch.from_numpy(extracted_val)
+        data = self.data[index]
+        return data
+
+    def extract(self, value):
+        # print(value.shape)
+        data = value.reshape(self.shape)
+        data = data.transpose(self.dims)
+        if self.use_idx:
+            data = data[self.t_idx]
+        return data
+    def open_db(self):
+        self.env = lmdb.open(self.path, max_readers=32, 
+                        readonly=True, readahead=False, 
+                        lock=False, meminit=False)
+        self.txn = self.env.begin(write=False, buffers=True)
 class LMDBData(Dataset):
     def __init__(self, path, data_shape, dims, t_idx=None, num_data=None):
         super().__init__()
@@ -57,7 +123,7 @@ class LMDBData(Dataset):
         if not hasattr(self, 'txn'):
             self.open_db()
 
-        key = f'{index}'.encode()
+        key = f'28-{index:05}'.encode()
         value = self.txn.get(key)
         val = np.frombuffer(value, dtype=np.float32)
         extracted_val = self.extract(val)
@@ -65,6 +131,7 @@ class LMDBData(Dataset):
         return data
 
     def extract(self, value):
+        print(value.shape)
         data = value.reshape(self.shape)
         data = data.transpose(self.dims)
         if self.use_idx:

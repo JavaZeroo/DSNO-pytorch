@@ -23,7 +23,7 @@ except ImportError:
 def save2dir(images, outdir, curr):
     num_imgs = images.shape[0]
     for j in range(num_imgs):
-        im = Image.fromarray(images[j])
+        im = Image.fromarray(images[j][:,:,0])
         img_path = os.path.join(outdir, f'{j + curr}.png')
         im.save(img_path)    
     return curr + num_imgs
@@ -71,12 +71,13 @@ def uncond_generate(model, config, device, outdir, curr=0, batch=50, num_imgs=50
     model.eval()
 
     num_batches = (num_imgs - 1) // batch + 1
+    print(num_batches)
     for i in range(num_batches):
         if i == num_batches - 1 and (num_imgs % batch > 0):
             curr_batchsize = num_imgs % batch
         else:
             curr_batchsize = batch
-        init_x = torch.randn((curr_batchsize, 3, img_size, img_size), device=device)
+        init_x = torch.randn((curr_batchsize, 1, img_size, img_size), device=device)
         pred = model(init_x, logsnr)[:, -1]
         imgs = pred.add_(1).mul(127.5).clamp_(0, 255).to(torch.uint8).permute(0, 2, 3, 1) # B, H, W, C
         imgs = imgs.cpu().numpy()

@@ -248,7 +248,7 @@ class TDDPMm(nn.Module):
         h = modules[m_idx](h)
         m_idx += 1
         assert m_idx == len(modules)
-        h = h.view(B, T, 3, H, W)
+        h = h.view(B, T, 1, H, W)
         if self.pred_eps:
             h = noise - h
         return h
