@@ -7,7 +7,7 @@ conda env create -f dd.yml
 ```
 
 ## Train
-1. Adjusting training profiles: `configs/mnist10-dsno-t4.yaml`
+1. Adjusting training profiles: `configs/mnist10-dsno-t4.yaml`, which you need to change `datapath` and make sure it is end with `/lmdb`(generated in [diffusion_distillation](https://github.com/JavaZeroo/diffusion_distillation)).
 2. run: `python3 train_mnist.py --config configs/mnist10-dsno-t4.yaml --num_gpus 1`
 
 
