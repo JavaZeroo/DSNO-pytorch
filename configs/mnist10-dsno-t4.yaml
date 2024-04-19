@@ -50,14 +50,14 @@ model:
 
 training:
     start_iter: 0
-    n_iters: 5001
+    n_iters: 10001
     batchsize: 32
     loss: vgg
     lpips: False
     # init_ckpt: 'exp/mnist-tddpmm-t4-quad-256-vgg-nocal/ckpts/solver-model_final.pt' 
 
 eval:
-    save_step: 1000
+    save_step: 2000
     test_fid: True
 
 optim:
