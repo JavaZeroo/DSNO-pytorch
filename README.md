@@ -1,5 +1,23 @@
 # Fast sampling of diffusion models via operator learning
 
+## Env
+
+```bash
+conda env create -f dd.yml
+```
+
+## Train
+1. Adjusting training profiles: `configs/mnist10-dsno-t4.yaml`
+2. run: `python3 train_mnist.py --config configs/mnist10-dsno-t4.yaml --num_gpus 1`
+
+
+## Sampling
+
+1. run: `python3 generate_mnist.py --config configs/mnist10-dsno-t4.yaml --ckpt /path/to/ckpt --num_imgs 10`
+
+
+---
+
 Code for [Preprint](https://arxiv.org/pdf/2211.13449.pdf)
 
 <center>

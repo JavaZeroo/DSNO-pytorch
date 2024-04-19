@@ -50,7 +50,7 @@ model:
 
 training:
     start_iter: 0
-    n_iters: 2001
+    n_iters: 5001
     batchsize: 32
     loss: vgg
     lpips: False
@@ -62,7 +62,7 @@ eval:
 
 optim:
     optimizer: 'Adam'
-    lr: 0.001  # 2e-4
+    lr: 0.0001  # 2e-4
     beta1: 0.9
     beta2: 0.999
     eps: 0.0000001  # 1e-8
