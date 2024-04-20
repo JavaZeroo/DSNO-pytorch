@@ -50,8 +50,8 @@ model:
 
 training:
     start_iter: 0
-    n_iters: 10001
-    batchsize: 32
+    n_iters: 100_001
+    batchsize: 128
     loss: vgg
     lpips: False
     # init_ckpt: 'exp/mnist-tddpmm-t4-quad-256-vgg-nocal/ckpts/solver-model_final.pt' 
