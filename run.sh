@@ -1,3 +1,7 @@
+#!/bin/bash
+
+source ~/.bashrc
+
 # env
 conda activate new
 
