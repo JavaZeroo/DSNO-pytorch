@@ -1,9 +1,18 @@
 # Fast sampling of diffusion models via operator learning
 
+TL;DR: 
+
+Simply run
+```bash
+bash run.sh
+```
+
+---
+
 ## Env
 
 ```bash
-conda env create -f dd.yml
+conda env create -f new.yml
 ```
 
 ## Train
